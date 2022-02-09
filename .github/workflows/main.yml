@@ -1,0 +1,84 @@
+# This is a basic workflow to help you get started with Actions
+
+name: run-node
+
+on:
+  workflow_dispatch:
+    inputs:
+      UNTIL:
+        description: 'sync blocks until specific timestamp in millisecond (default now)'
+        required: false
+        default: ''
+      BRANCH:
+        description: 'run node on which branch'
+        required: false
+        default: 'data'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.inputs.BRANCH }}
+    - name: Clone Neo Node
+      uses: actions/checkout@v2
+      with:
+        repository: neo-project/neo-node
+        ref: v3.1.0
+        path: .node
+    - name: Clone Neo Modules
+      uses: actions/checkout@v2
+      with:
+        repository: neo-project/neo-modules
+        ref: v3.1.0
+        path: .modules
+    - name: Clone Statistics Plugin
+      uses: actions/checkout@v2
+      with:
+        repository: neoburger/statistics
+        ref: master
+        path: .statistics
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+        include-prerelease: true
+    - name: Install Libraries
+      run: sudo apt-get install -y libleveldb-dev sqlite3 libsqlite3-dev libunwind8-dev
+    - name: Restore Neo Node
+      run: cd .node/neo-cli && dotnet restore
+    - name: Restore Neo Modules
+      run: cd .modules/src/LevelDBStore && dotnet restore
+    - name: Restore Statistics Plugin
+      run: cd .statistics && dotnet restore
+    - name: Build Neo Node
+      run: cd .node/neo-cli && dotnet publish -c Release
+    - name: Build Neo Modules
+      run: cd .modules/src/LevelDBStore && dotnet publish -c Release
+    - name: Build Statistics Plugin
+      run: |
+        cd .statistics 
+        dotnet publish -c Release
+    - name: Install Plugins
+      run: |
+        mkdir -p .node/neo-cli/bin/Release/net6.0/Plugins
+        cp .modules/src/LevelDBStore/bin/Release/net6.0/LevelDBStore.dll .node/neo-cli/bin/Release/net6.0/Plugins/
+        cp .statistics/bin/Release/net6.0/statistics.dll .node/neo-cli/bin/Release/net6.0/Plugins/
+    - name: Run
+      env:
+        UNTIL: ${{ github.event.inputs.UNTIL }}
+      run: |
+        mkdir -p data
+        mkfifo .tmp
+        cat .tmp | (dotnet .node/neo-cli/bin/Release/net6.0/neo-cli.dll && echo > .tmp)
+    - name: Save
+      run: |
+        echo ".*" > .gitignore
+        git config --global user.email "neoburger@neoburger.io"
+        git config --global user.name "neoburger"
+        git add .
+        git commit -m release
+        git push
+    
