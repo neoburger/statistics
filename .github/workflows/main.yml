@@ -9,6 +9,10 @@ on:
         description: 'sync blocks until specific timestamp in millisecond (default now)'
         required: false
         default: ''
+      BRANCH:
+        description: 'run node on which branch'
+        required: false
+        default: 'data'
 
   schedule:
   - cron: "0 1,9,17 * * *"
@@ -20,7 +24,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        ref: data
+        ref: ${{ github.event.inputs.BRANCH }}
     - name: Clone Neo Node
       uses: actions/checkout@v2
       with:
@@ -53,18 +57,18 @@ jobs:
     - name: Restore Statistics Plugin
       run: cd .statistics && dotnet restore
     - name: Build Neo Node
-      run: cd .node/neo-cli && dotnet publish -c Release -r linux-x64 --self-contained true
+      run: cd .node/neo-cli && dotnet publish -c Release
     - name: Build Neo Modules
-      run: cd .modules/src/LevelDBStore && dotnet publish -c Release -r linux-x64 --self-contained true
+      run: cd .modules/src/LevelDBStore && dotnet publish -c Release
     - name: Build Statistics Plugin
       run: |
         cd .statistics 
-        dotnet publish -c Release -r linux-x64 --self-contained true
+        dotnet publish -c Release
     - name: Install Plugins
       run: |
-        mkdir -p .node/neo-cli/bin/Release/net6.0/linux-x64/Plugins
-        cp .modules/src/LevelDBStore/bin/Release/net6.0/linux-x64/LevelDBStore.dll .node/neo-cli/bin/Release/net6.0/linux-x64/Plugins/
-        cp .statistics/bin/Release/net6.0/linux-x64/statistics.dll .node/neo-cli/bin/Release/net6.0/linux-x64/Plugins/
+        mkdir -p .node/neo-cli/bin/Release/net6.0/Plugins
+        cp .modules/src/LevelDBStore/bin/Release/net6.0/LevelDBStore.dll .node/neo-cli/bin/Release/net6.0/Plugins/
+        cp .statistics/bin/Release/net6.0/statistics.dll .node/neo-cli/bin/Release/net6.0/Plugins/
     - name: Run
       env:
         UNTIL: ${{ github.event.inputs.UNTIL }}
@@ -73,6 +77,7 @@ jobs:
         dotnet .node/neo-cli/bin/Release/net6.0/linux-x64/neo-cli.dll
     - name: Save
       run: |
+        echo ".*" > .gitignore
         git config --global user.email "neoburger@neoburger.io"
         git config --global user.name "neoburger"
         git add .
