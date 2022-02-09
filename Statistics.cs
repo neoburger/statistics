@@ -25,8 +25,8 @@ public class Statistics : Plugin, IPersistencePlugin
         ApplicationEngine balanceOfDAO = ApplicationEngine.Run(BNEO.MakeScript("balanceOf", new object[] { DAO }), snapshot, settings: system.Settings);
         if (ts.State != VMState.HALT || rps.State != VMState.HALT || balanceOfTEE.State != VMState.HALT || balanceOfDAO.State != VMState.HALT)
         {
-            Console.Error.WriteLine($"ERROR: {block.Index}");
-            Environment.Exit(1);
+            Console.Error.WriteLine($"NOTFOUND: {block.Index}");
+            return;
         }
         File.WriteAllText(System.IO.Path.Join(DIR, $"{block.Index}.json"), $"{System.Text.Json.JsonSerializer.Serialize(new { timestamp = block.Timestamp, blocknum = block.Index, rps = rps.ResultStack.Select(v => v.GetInteger().ToString()).First(), total_supply = ts.ResultStack.Select(v => v.GetInteger().ToString()).First(), balance_of_TEE = balanceOfTEE.ResultStack.Select(v => v.GetInteger().ToString()).First(), balance_of_DAO = balanceOfDAO.ResultStack.Select(v => v.GetInteger().ToString()).First(), })}");
     }
