@@ -1,0 +1,27 @@
+name: run
+
+on:
+  workflow_dispatch:
+  schedule:
+  - cron: "30 1,9,17 * * *"
+  push:
+    branches:
+      - data
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: data
+        
+    - name: Azure CLI Action
+      uses: Azure/cli@v1
+      with:
+        inlineScript: 
+          az storage blob sync -c data -s ./data --account-name neoburger --account-key ${{ secrets.AZURE_STORAGE_ACCESS_KEY }}
+        
+          
