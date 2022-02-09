@@ -64,7 +64,7 @@ jobs:
       run: |
         mkdir -p .node/neo-cli/bin/Release/net6.0/linux-x64/Plugins
         cp .modules/src/LevelDBStore/bin/Release/net6.0/linux-x64/LevelDBStore.dll .node/neo-cli/bin/Release/net6.0/linux-x64/Plugins/
-        cp .statistics/status/bin/Release/net6.0/linux-x64/statistics.dll .node/neo-cli/bin/Release/net6.0/linux-x64/Plugins/
+        cp .statistics/bin/Release/net6.0/linux-x64/statistics.dll .node/neo-cli/bin/Release/net6.0/linux-x64/Plugins/
     - name: Run
       env:
         UNTIL: ${{ github.event.inputs.UNTIL }}
