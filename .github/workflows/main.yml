@@ -74,7 +74,7 @@ jobs:
         UNTIL: ${{ github.event.inputs.UNTIL }}
       run: |
         mkdir -p data
-        dotnet .node/neo-cli/bin/Release/net6.0/neo-cli.dll
+        dotnet .node/neo-cli/bin/Release/net6.0/neo-cli.dll  < /dev/stdin
     - name: Save
       run: |
         echo ".*" > .gitignore
