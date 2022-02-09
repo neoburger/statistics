@@ -1,4 +1,4 @@
-name: run
+name: sync-blob
 
 on:
   workflow_dispatch:
