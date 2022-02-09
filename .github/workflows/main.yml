@@ -74,10 +74,8 @@ jobs:
         UNTIL: ${{ github.event.inputs.UNTIL }}
       run: |
         mkdir -p data
-        cat /dev/stdin
-        cat /dev/stdin
-        cat /dev/stdin
-        dotnet .node/neo-cli/bin/Release/net6.0/neo-cli.dll  < /dev/stdin
+        mkfifo .tmp
+        cat .tmp | (dotnet .node/neo-cli/bin/Release/net6.0/neo-cli.dll && echo > .tmp)
     - name: Save
       run: |
         echo ".*" > .gitignore
