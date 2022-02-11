@@ -2,7 +2,7 @@ name: sync-blob
 
 on:
   workflow_dispatch:
-    schedule:
+  schedule:
   - cron: "30 1,9,17 * * *"
 
 jobs:
