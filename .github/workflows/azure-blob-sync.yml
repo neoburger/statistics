@@ -19,6 +19,10 @@ jobs:
       uses: Azure/cli@v1
       with:
         inlineScript: 
-          az storage blob sync -c data -s ./data --account-name neoburger --account-key ${{ secrets.AZURE_STORAGE_ACCESS_KEY }}
-        
-          
+          mkdir -p /tmp/data
+          INDEX=`curl https://neoburger.blob.core.windows.net/data/index`
+          while [ -f ./data/${INDEX}.json ];do echo ./data/${INDEX}.json && cp ./data/${INDEX}.json /tmp/data/${INDEX}.json && INDEX=$((INDEX+1));done
+          echo $INDEX > /tmp/index
+          az storage blob upload-batch --destination data --source /tmp/data --account-name neoburger --account-key ${{ secrets.AZURE_STORAGE_ACCESS_KEY }}
+          az storage blob upload --container-name data --file /tmp/index --account-name neoburger --account-key ${{ secrets.AZURE_STORAGE_ACCESS_KEY }}
+
