@@ -25,7 +25,7 @@ jobs:
     - name: Azure CLI Action
       uses: Azure/cli@v1
       with:
-        inlineScript: 
+        inlineScript: |
           az storage blob upload-batch --destination data --source .tmp/data --account-name neoburger --account-key ${{ secrets.AZURE_STORAGE_ACCESS_KEY }}
           az storage blob upload --container-name data --file .tmp/index --account-name neoburger --account-key ${{ secrets.AZURE_STORAGE_ACCESS_KEY }}
 
