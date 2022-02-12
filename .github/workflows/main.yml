@@ -19,11 +19,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      BRANCH: data
 
     steps:
+    - name: set custom branch
+      if: github.event.inputs.BRANCH != ''
+      run: echo "::set-env name=BRANCH::${{ github.event.inputs.BRANCH }}"
     - uses: actions/checkout@v2
       with:
-        ref: ${{ github.event.inputs.BRANCH }}
+        ref: ${BRANCH}
     - name: Clone Neo Node
       uses: actions/checkout@v2
       with:
