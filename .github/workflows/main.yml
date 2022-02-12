@@ -25,10 +25,10 @@ jobs:
     steps:
     - name: set custom branch
       if: github.event.inputs.BRANCH != ''
-      run: echo "::set-env name=BRANCH::${{ github.event.inputs.BRANCH }}"
+      run: echo "BRANCH=${{ github.event.inputs.BRANCH }}" >> $GITHUB_ENV
     - uses: actions/checkout@v2
       with:
-        ref: ${BRANCH}
+        ref: ${{ env.BRANCH }}
     - name: Clone Neo Node
       uses: actions/checkout@v2
       with:
