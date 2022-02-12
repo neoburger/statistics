@@ -8,8 +8,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    if: contains(github.event.comment.body, '/revert')
-
     steps:
     - uses: actions/checkout@v2
       with:
