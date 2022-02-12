@@ -15,5 +15,5 @@ jobs:
         fetch-depth: 0
     - name: push forcely
       run: |
-        git checkout 57c6bf44faff24e025e48f62496c7c098cf13b7b
+        git reset 57c6bf44faff24e025e48f62496c7c098cf13b7b --hard
         git push -f
