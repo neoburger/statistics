@@ -1,8 +1,7 @@
 name: Automatic Revert
 
 on:
-  issue_comment:
-    types: [created]
+  workflow_dispatch:
 
 jobs:
   revert-commit:
@@ -12,9 +11,11 @@ jobs:
     if: contains(github.event.comment.body, '/revert')
 
     steps:
-      - name: Checkout latest code
-        uses: actions/checkout@v2
-      - name: Automatic Revert
-        uses: srt32/revert@v0.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/checkout@v2
+      with:
+        ref: main
+        fetch-depth: 0
+    - name: push forcely
+      run: |
+        git checkout 57c6bf44faff24e025e48f62496c7c098cf13b7b
+        git push -f
