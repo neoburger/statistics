@@ -1,0 +1,31 @@
+name: split-data
+
+on:
+  workflow_dispatch:
+    inputs:
+      PATTERN:
+        description: 'split what data?'
+        required: false
+        default: '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      BRANCH: data
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: data
+    - name: Run
+      run: for src in data/${{ github.event.inputs.PATTERN }}.json;do filename="${src/#data\/}";number="${filename/%.json}";hex=`printf "%08x\n" $number`;dest=data/${hex:0:1}/${hex:1:1}/${hex:2:1}/${hex:3:1}/${hex:4:1}/${hex:5:1}/${hex:6:1}/${hex:7:1};mkdir -p $dest;mv $src $dest/$filename;echo $src, $dest;done
+    - name: Save
+      run: |
+        echo ".*" > .gitignore
+        git config --global user.email "neoburger@neoburger.io"
+        git config --global user.name "neoburger"
+        git add .
+        git commit -m release
+        git push
+    
