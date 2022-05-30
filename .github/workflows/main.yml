@@ -31,13 +31,13 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: neo-project/neo-node
-        ref: v3.2.1
+        ref: v3.1.0
         path: .node
     - name: Clone Neo Modules
       uses: actions/checkout@v2
       with:
         repository: neo-project/neo-modules
-        ref: v3.2.1
+        ref: v3.1.0
         path: .modules
     - name: Clone Statistics Plugin
       uses: actions/checkout@v2
