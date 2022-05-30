@@ -28,6 +28,7 @@ public class Statistics : Plugin, IPersistencePlugin
             Console.Error.WriteLine($"NOTFOUND: {block.Index}");
             return;
         }
-        File.WriteAllText(System.IO.Path.Join(DIR, $"{block.Index}.json"), $"{System.Text.Json.JsonSerializer.Serialize(new { timestamp = block.Timestamp, blocknum = block.Index, rps = rps.ResultStack.Select(v => v.GetInteger().ToString()).First(), total_supply = ts.ResultStack.Select(v => v.GetInteger().ToString()).First(), balance_of_TEE = balanceOfTEE.ResultStack.Select(v => v.GetInteger().ToString()).First(), balance_of_DAO = balanceOfDAO.ResultStack.Select(v => v.GetInteger().ToString()).First(), })}");
+        System.IO.Directory.CreateDirectory(System.IO.Path.Join(DIR, string.Join("/",block.Index.ToString("X8").ToArray())));
+        File.WriteAllText(System.IO.Path.Join(DIR, string.Join("/",block.Index.ToString("X8").ToArray()), $"{block.Index}.json"), $"{System.Text.Json.JsonSerializer.Serialize(new { timestamp = block.Timestamp, blocknum = block.Index, rps = rps.ResultStack.Select(v => v.GetInteger().ToString()).First(), total_supply = ts.ResultStack.Select(v => v.GetInteger().ToString()).First(), balance_of_TEE = balanceOfTEE.ResultStack.Select(v => v.GetInteger().ToString()).First(), balance_of_DAO = balanceOfDAO.ResultStack.Select(v => v.GetInteger().ToString()).First(), })}");
     }
 }
