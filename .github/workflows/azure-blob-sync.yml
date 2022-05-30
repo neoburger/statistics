@@ -19,7 +19,9 @@ jobs:
       run: |
         mkdir -p .tmp/data
         INDEX=`curl https://neoburger.blob.core.windows.net/data/index`
-        while [ -f ./data/${INDEX}.json ];do echo ./data/${INDEX}.json && cp ./data/${INDEX}.json .tmp/data/${INDEX}.json && INDEX=$((INDEX+1));done
+        HEX=`printf "%08x\n" $INDEX`
+        SRC=data/${HEX:0:1}/${HEX:1:1}/${HEX:2:1}/${HEX:3:1}/${HEX:4:1}/${HEX:5:1}/${HEX:6:1}/${HEX:7:1}/${INDEX}.json
+        while [ -f $SRC ];do echo $SRC && cp $SRC .tmp/data/${INDEX}.json && INDEX=$((INDEX+1)); HEX=`printf "%08x\n" $INDEX`;SRC=data/${HEX:0:1}/${HEX:1:1}/${HEX:2:1}/${HEX:3:1}/${HEX:4:1}/${HEX:5:1}/${HEX:6:1}/${HEX:7:1}/${INDEX}.json;done
         echo $INDEX > .tmp/index
         
     - name: Azure CLI Action
