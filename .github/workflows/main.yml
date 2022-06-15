@@ -68,9 +68,10 @@ jobs:
         dotnet publish -c Release
     - name: Install Plugins
       run: |
-        mkdir -p .node/neo-cli/bin/Release/net6.0/Plugins
-        cp .modules/src/LevelDBStore/bin/Release/net6.0/LevelDBStore.dll .node/neo-cli/bin/Release/net6.0/Plugins/
-        cp .statistics/bin/Release/net6.0/statistics.dll .node/neo-cli/bin/Release/net6.0/Plugins/
+        mkdir -p .node/neo-cli/bin/Release/net6.0/Plugins/LevelDBStore
+        mkdir -p .node/neo-cli/bin/Release/net6.0/Plugins/statistics
+        cp .modules/src/LevelDBStore/bin/Release/net6.0/LevelDBStore.dll .node/neo-cli/bin/Release/net6.0/Plugins/LevelDBStore/
+        cp .statistics/bin/Release/net6.0/statistics.dll .node/neo-cli/bin/Release/net6.0/Plugins/statistics/
     - name: Run
       env:
         UNTIL: ${{ github.event.inputs.UNTIL }}
