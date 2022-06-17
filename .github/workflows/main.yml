@@ -12,7 +12,7 @@ on:
         required: false
         default: 'data'
   schedule:
-  - cron: "0 1,9,17 * * *"
+  - cron: "0 1,13 * * *"
 
 jobs:
   build:
@@ -31,13 +31,13 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: neo-project/neo-node
-        ref: v3.1.0
+        ref: v3.3.1
         path: .node
     - name: Clone Neo Modules
       uses: actions/checkout@v2
       with:
         repository: neo-project/neo-modules
-        ref: v3.1.0
+        ref: v3.3.0
         path: .modules
     - name: Clone Statistics Plugin
       uses: actions/checkout@v2
@@ -68,9 +68,10 @@ jobs:
         dotnet publish -c Release
     - name: Install Plugins
       run: |
-        mkdir -p .node/neo-cli/bin/Release/net6.0/Plugins
-        cp .modules/src/LevelDBStore/bin/Release/net6.0/LevelDBStore.dll .node/neo-cli/bin/Release/net6.0/Plugins/
-        cp .statistics/bin/Release/net6.0/statistics.dll .node/neo-cli/bin/Release/net6.0/Plugins/
+        mkdir -p .node/neo-cli/bin/Release/net6.0/Plugins/LevelDBStore
+        mkdir -p .node/neo-cli/bin/Release/net6.0/Plugins/statistics
+        cp .modules/src/LevelDBStore/bin/Release/net6.0/LevelDBStore.dll .node/neo-cli/bin/Release/net6.0/Plugins/LevelDBStore/
+        cp .statistics/bin/Release/net6.0/statistics.dll .node/neo-cli/bin/Release/net6.0/Plugins/statistics/
     - name: Run
       env:
         UNTIL: ${{ github.event.inputs.UNTIL }}
